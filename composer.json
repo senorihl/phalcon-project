@@ -1,0 +1,29 @@
+{
+    "name": "senorihl/phalcon-project",
+    "description": "A sample development phalcon project",
+    "type": "project",
+    "license": "MIT",
+    "config": {
+        "platform": {
+            "php": "8.3"
+        }
+    },
+    "require": {
+        "ext-phalcon": "^5.4",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "ext-mbstring": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "files": [ "src/services.php" ]
+    },
+    "require-dev": {
+        "phalcon/ide-stubs": "^5.8",
+        "symfony/var-dumper": "^5.4",
+        "phpunit/phpunit": "^11.0"
+    }
+}

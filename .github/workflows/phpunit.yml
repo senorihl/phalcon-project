@@ -1,0 +1,33 @@
+name: PHPUnit
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup docker
+        uses: docker/setup-buildx-action@v3
+      - name: Start container
+        run: |-
+          make start
+          make composer c="install --prefer-dist --no-progress --no-scripts --no-interaction"
+      - name: Run tests
+        run: make test c="--coverage-clover public/tests/clover.xml"
+      - name: Code Coverage Summary Report
+        uses: saschanowak/CloverCodeCoverageSummary@1.1.0
+        with:
+          filename: public/tests/clover.xml
+      - name: 'Add Code Coverage to Job Summary'
+        run: |
+          cat code-coverage-summary.md >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-details.md >> $GITHUB_STEP_SUMMARY
+      - name: 'Add Code Coverage Summary as PR Comment'
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-summary.md
