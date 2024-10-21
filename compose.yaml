@@ -1,0 +1,44 @@
+name: phalcon-project
+
+services:
+  traefik:
+    image: "traefik:v3.1"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  php:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.localhost`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=web"
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: core
+    image: "${COMPOSE_PROJECT_NAME}:latest"
+    volumes:
+      - .:/var/www/app/:rw
+    env_file:
+      - .env
+    environment:
+      DEV_UID: ${DEV_UID}
+
+  db:
+    image: postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+volumes:
+  pg_data:
