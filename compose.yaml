@@ -1,0 +1,15 @@
+name: phalcon-project
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: core
+    image: "${COMPOSE_PROJECT_NAME}:latest"
+    volumes:
+      - .:/var/www/app/:rw
+    ports:
+      - "80:80"
+    environment:
+      DEV_UID: ${DEV_UID}
