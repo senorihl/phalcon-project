@@ -3,7 +3,6 @@ name: phalcon-project
 services:
   traefik:
     image: "traefik:v3.1"
-    container_name: "traefik"
     command:
       #- "--log.level=DEBUG"
       - "--api.insecure=true"
