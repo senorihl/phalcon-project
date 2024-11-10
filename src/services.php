@@ -1,5 +1,7 @@
 <?php
 
+use App\Web\Controller as WebController;
+use App\Api\Controller as ApiController;
 use Phalcon\Di\DiInterface;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Logger\Adapter\Stream;
@@ -12,23 +14,16 @@ function build_config()
     ]);
 }
 
-function build_dependency_injection(): DiInterface
+function build_dependency_injection(string $defaultModule): DiInterface
 {
     $container = new FactoryDefault();
 
-    $container->setShared('logger', function () use ($container) {
+    $container->set('logger', function () use ($container) {
         $logger = new Logger('main', [new Stream('php://stdout')]);
         return $logger;
     });
 
-    $container->setShared('router', function () use ($container) {
-        $router = new \App\Phalcon\Router(false);
-        $router->setDI($container);
-        $router->setEventsManager($container->get('eventsManager'));
-        return $router;
-    });
-
-    $container->setShared('db', function () {
+    $container->set('db', function () {
         $parts = parse_url(getenv('DATABASE_URL'));
 
         return (new \Phalcon\Db\Adapter\PdoFactory)
@@ -43,7 +38,27 @@ function build_dependency_injection(): DiInterface
             );
     });
 
-    $container->setShared('config', build_config());
+    $container->set('router', function () use ($container, $defaultModule) {
+        $router = new \App\Phalcon\Router(false);
+        $router->setDI($container);
+        $router->setDefaultModule($defaultModule);
+        $router->setEventsManager($container->get('eventsManager'));
+
+        switch ($defaultModule) {
+            case 'web':
+                $router->addModuleResource('web', WebController\IndexController::class);
+                $router->addModuleResource('web', WebController\ErrorController::class);
+                break;
+            case 'api':
+                $router->addModuleResource('api', ApiController\IndexController::class);
+                $router->addModuleResource('api', ApiController\ErrorController::class);
+                break;
+        }
+
+        return $router;
+    });
+
+    $container->set('config', build_config());
 
     return $container;
 }

@@ -1,38 +1,20 @@
 <?php
 
-namespace App\Web\Controller;
+namespace App\Api\Controller;
 
 use Phalcon\Mvc\Controller;
 
 class IndexController extends Controller
 {
+
     /**
-     * @return void
      * @Route("/")
      */
     public function indexAction()
     {
-
-    }
-
-    /**
-     * @return void
-     * @Route("/phpinfo")
-     */
-    public function phpinfoAction()
-    {
-        ob_start();
-        phpinfo();
-        return ob_get_clean();
-    }
-
-    /**
-     * @return void
-     * @Route("/exception")
-     */
-    public function exceptionAction()
-    {
-        throw new \Exception('Example exception');
+        return [
+            'Hello' => 'World!'
+        ];
     }
 
     /**
@@ -41,8 +23,6 @@ class IndexController extends Controller
      */
     public function statusAction()
     {
-        $this->view->disable();
-
         try {
             $this->db->execute('SELECT 1');
             $db_status = 'Ok';
@@ -56,4 +36,5 @@ Liveliness: Ok
 Database: $db_status
 TEXT);
     }
+
 }

@@ -2,8 +2,6 @@
 
 namespace App\Phalcon;
 
-use App\Web\Controller\ErrorController;
-use App\Web\Controller\IndexController;
 use Phalcon\Mvc\Router\Annotations;
 
 class Router extends Annotations
@@ -11,9 +9,6 @@ class Router extends Annotations
     public function __construct(bool $defaultRoutes = true)
     {
         parent::__construct($defaultRoutes);
-
-        $this->addModuleResource('web', IndexController::class);
-        $this->addModuleResource('web', ErrorController::class);
         $this->setControllerSuffix('Controller');
         $this->notFound(['controller' => 'Error', 'action' => 'notFound']);
     }
@@ -33,10 +28,5 @@ class Router extends Annotations
         }
 
         return parent::addModuleResource($module, $handler, $prefix);
-    }
-
-    public function beforeException()
-    {
-        dd(func_get_args());
     }
 }

@@ -5,7 +5,6 @@ namespace App\Web;
 use Phalcon\Di\DiInterface;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\ModuleDefinitionInterface;
-use Phalcon\Mvc\Router\Annotations;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Volt;
 
@@ -16,15 +15,16 @@ class Module implements ModuleDefinitionInterface
 
     public function registerServices(DiInterface $container)
     {
-        $container->set('dispatcher', function () use ($container) {
+        $container->setShared('dispatcher', function () use ($container) {
             $dispatcher = new Dispatcher();
+            $dispatcher->setEventsManager($container->get('eventsManager'));
             $dispatcher->setControllerSuffix('Controller');
             $dispatcher->setDefaultNamespace('\\App\\Web\\Controller\\');
             $dispatcher->setDefaultController('Index');
             return $dispatcher;
         });
 
-        $container->set('volt', function ($view) use ($container) {
+        $container->setShared('volt', function ($view) use ($container) {
             $volt = new Volt($view, $container);
 
             $volt->setOptions([

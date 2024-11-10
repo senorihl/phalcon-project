@@ -1,4 +1,4 @@
-name: phalcon-project
+name: phalcon-production
 
 services:
   traefik:
@@ -15,28 +15,33 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
-  php:
+  web:
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=${COMPOSE_PROJECT_NAME}"
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.localhost`)"
-      - "traefik.http.middlewares.${COMPOSE_PROJECT_NAME}.headers.customrequestheaders.X-Phalcon-Module=web"
-      - "traefik.http.routers.api-${COMPOSE_PROJECT_NAME}.middlewares=api-${COMPOSE_PROJECT_NAME}"
-      - "traefik.http.routers.api-${COMPOSE_PROJECT_NAME}.rule=Host(`api.${COMPOSE_PROJECT_NAME}.localhost`)"
-      - "traefik.http.middlewares.api-${COMPOSE_PROJECT_NAME}.headers.customrequestheaders.X-Phalcon-Module=api"
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=web"
-      - "traefik.http.routers.api-${COMPOSE_PROJECT_NAME}.entrypoints=web"
     build:
       context: .
       dockerfile: docker/Dockerfile
       target: core
-    image: "${COMPOSE_PROJECT_NAME}:latest"
-    volumes:
-      - .:/var/www/app/:rw
+    image: "${COMPOSE_PROJECT_NAME}-web:latest"
     env_file:
       - .env
-    environment:
-      DEV_UID: ${DEV_UID}
+
+  api:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-${COMPOSE_PROJECT_NAME}.rule=Host(`api.${COMPOSE_PROJECT_NAME}.localhost`)"
+      - "traefik.http.routers.api-${COMPOSE_PROJECT_NAME}.entrypoints=web"
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: runnable
+      args:
+        PHALCON_MODULE: api
+    image: "${COMPOSE_PROJECT_NAME}-api:latest"
+    env_file:
+      - .env
 
   db:
     image: postgres

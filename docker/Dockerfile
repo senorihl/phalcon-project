@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM ubuntu:24.04 as core
+FROM ubuntu:24.04 AS core
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && mkdir -p /var/www/app \
@@ -51,6 +51,7 @@ COPY docker/healthcheck.sh /usr/local/bin/healthcheck.sh
 COPY docker/supervisor/supervisor.conf /etc/supervisord.conf
 COPY docker/php/php.ini /etc/php/8.0/fpm/php.ini
 COPY docker/php/php-fpm.conf /etc/php/8.0/fpm/php-fpm.conf
+COPY docker/php/xdebug.ini /etc/php/8.0/mods-available/xdebug.ini
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY docker/nginx/site.conf /etc/nginx/sites-available/default
 
@@ -74,3 +75,24 @@ EXPOSE 80
 ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
 
 CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]
+
+FROM core AS runnable
+
+ARG PHALCON_MODULE=web
+
+COPY . /var/www/app/
+
+RUN unset COMPOSER_HOME \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && find . -type d | grep .git | xargs rm -rf \
+    && apt autoremove -y php8.0-xdebug \
+    && sed -i 's/^/;/' /etc/php/8.0/mods-available/xdebug.ini \
+    && composer clear-cache \
+    && composer install --prefer-dist \
+    && sed -i '/^#/d' /etc/nginx/sites-available/default \
+    && sed -i '/^$/d' /etc/nginx/sites-available/default \
+    && sed -i 's/\$http_x_phalcon_module if_not_empty/'"${PHALCON_MODULE}"'/' /etc/nginx/sites-available/default
+
+
+HEALTHCHECK CMD [ "/usr/local/bin/healthcheck.sh" ]
+
