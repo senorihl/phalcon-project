@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   build-test:
+    name: "Build & run PHPUnit"
     runs-on: ubuntu-latest
 
     steps:
@@ -11,12 +12,23 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup docker
         uses: docker/setup-buildx-action@v3
-      - name: Start container
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: phalcon-project-tester:latest
+          context: .
+          file: ./docker/Dockerfile
+          target: core
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
+      - name: Start test runner container
         run: |-
-          make start
-          make composer c="install --prefer-dist --no-progress --no-scripts --no-interaction"
-      - name: Run tests
-        run: make test c="--coverage-clover public/tests/clover.xml"
+          docker container run \
+            --name test-runner --rm -v ".:/var/www/app/" -e "DEV_UID=$(id -u)" \
+            phalcon-project-tester:latest \
+          php vendor/bin/phpunit --coverage-clover public/tests/clover.xml
       - name: Code Coverage Summary Report
         uses: saschanowak/CloverCodeCoverageSummary@1.1.0
         with:
