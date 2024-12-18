@@ -19,6 +19,13 @@ class IndexControllerTest extends PhalconTestCase
 
     public function testStatusAction()
     {
+        $db = $this->createMock(AdapterInterface::class);
+        $db->expects($this->once())
+            ->method('execute')
+            ->with('SELECT 1')
+            ->willReturn(true);
+        $this->di->setShared('db', $db);
+
         $this->handleAction([
             'controller' => 'index',
             'action' => 'status',
