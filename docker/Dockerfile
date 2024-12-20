@@ -102,3 +102,20 @@ RUN unset COMPOSER_HOME \
 
 HEALTHCHECK CMD [ "/usr/local/bin/healthcheck.sh" ]
 
+FROM node:lts AS assets-builder
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+WORKDIR /var/www/app/
+
+COPY package.json yarn.lock /var/www/app/
+
+ENV YARN_CACHE_FOLDER=/var/www/.yarn
+
+RUN --mount=type=cache,target=/var/www/.yarn \
+     yarn install && chown node:node -R /var/www/.yarn
+
+COPY --chown=node:node . /var/www/app/
+
+ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
+

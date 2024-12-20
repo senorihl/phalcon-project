@@ -36,6 +36,9 @@ down: ## Stop the docker hub
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
 
+assets: ## Connect to the assets builder container
+	@$(DOCKER_COMP) exec -e NODE_DEV_UID=$(DEV_UID) -u $(DEV_UID) assets bash
+
 sh: ## Connect to the Phalcon container
 	@$(DOCKER_COMP) exec -e DEV_UID=$(DEV_UID) -u www-data php sh
 
