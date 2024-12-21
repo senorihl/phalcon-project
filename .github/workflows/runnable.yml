@@ -35,4 +35,4 @@ jobs:
           if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
       - name: Print logs of failure
         if: failure()
-        run: docker compose logs web api
+        run: docker compose -f production.compose.yaml logs web api
