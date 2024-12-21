@@ -27,7 +27,7 @@ jobs:
           cache-to: type=gha,mode=max
           load: true
       - name: Start test runner container
-        run: docker compose up -d --wait
+        run: docker compose up -d --wait; sleep 5
       - name: Tests some URLS
         run: |-
           if [ "${{ runner.debug }}" -eq "1" ]; curl -s -H http://phalcon-production.localhost/status
