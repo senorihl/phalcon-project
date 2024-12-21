@@ -30,16 +30,16 @@ jobs:
         run: docker compose up -d --wait; sleep 5
       - name: Tests some URLS
         run: |-
-          if [ "${{ runner.debug }}" -eq "1" ]; curl -s -H http://phalcon-production.localhost/status
+          if [ "${{ runner.debug }}" -eq "1" ]; then curl -s -H http://phalcon-production.localhost/status; fi
           _status=$(curl -s -o /dev/null -w "%{http_code}" -H http://phalcon-production.localhost/status)
           if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
-          if [ "${{ runner.debug }}" -eq "1" ]; curl -s -H http://api.phalcon-production.localhost/status
+          if [ "${{ runner.debug }}" -eq "1" ]; then curl -s -H http://api.phalcon-production.localhost/status; fi
           _status=$(curl -s -o /dev/null -w "%{http_code}" http://api.phalcon-production.localhost/status)
           if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
-          if [ "${{ runner.debug }}" -eq "1" ]; curl -s -H http://phalcon-production.localhost/
+          if [ "${{ runner.debug }}" -eq "1" ]; then curl -s -H http://phalcon-production.localhost/; fi
           _status=$(curl -s -o /dev/null -w "%{http_code}" http://phalcon-production.localhost/)
           if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi 
-          if [ "${{ runner.debug }}" -eq "1" ]; curl -s -H http://phalcon-production.localhost/assets/manifest.json
+          if [ "${{ runner.debug }}" -eq "1" ]; then curl -s -H http://phalcon-production.localhost/assets/manifest.json; fi
           _status=$(curl -s -o /dev/null -w "%{http_code}" http://phalcon-production.localhost/assets/manifest.json)
           if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
       - name: Print logs of failure
