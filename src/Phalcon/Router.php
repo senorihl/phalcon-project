@@ -10,7 +10,7 @@ class Router extends Annotations
     {
         parent::__construct($defaultRoutes);
         $this->setControllerSuffix('Controller');
-        $this->notFound(['controller' => 'Error', 'action' => 'notFound']);
+        $this->notFound(['controller' => 'error', 'action' => 'notFound']);
     }
 
     /**

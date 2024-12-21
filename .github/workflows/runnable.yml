@@ -1,0 +1,61 @@
+name: Docker
+
+on: [push]
+
+env:
+  COMPOSE_FILE: production.compose.yaml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: "Build & run runnable container"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup docker
+        uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: phalcon-project-tester:latest
+          context: .
+          file: ./docker/Dockerfile
+          target: runnable
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
+      - name: Start test runner container
+        run: docker compose up -d --wait; sleep 5
+      - name: Tests some URLS
+        run: |-
+          _status=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: phalcon-production.localhost" http://127.0.0.1/status)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: phalcon-production.localhost" http://127.0.0.1/)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi 
+          _status=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: phalcon-production.localhost" http://127.0.0.1/assets/manifest.json)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: api.phalcon-production.localhost" http://127.0.0.1/status)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: api.phalcon-production.localhost" http://127.0.0.1/)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: api.phalcon-production.localhost" http://127.0.0.1/assets/manifest.json)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+      - name: "[Failure] Display URL output"
+        if: failure()
+        run: |-
+          set -x
+          curl -s -i -H "Host: phalcon-production.localhost" http://127.0.0.1/status
+          curl -s -i -H "Host: phalcon-production.localhost" http://127.0.0.1/
+          curl -s -i -H "Host: phalcon-production.localhost" http://127.0.0.1/assets/manifest.json
+          curl -s -i -H "Host: api.phalcon-production.localhost" http://127.0.0.1/status
+          curl -s -i -H "Host: api.phalcon-production.localhost" http://127.0.0.1/
+          curl -s -i -H "Host: api.phalcon-production.localhost" http://127.0.0.1/assets/manifest.json
+      - name: "[Failure] Display logs"
+        if: failure()
+        run: sleep 3; docker compose logs web api traefik

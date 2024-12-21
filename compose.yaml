@@ -38,6 +38,18 @@ services:
     environment:
       DEV_UID: ${DEV_UID}
 
+  assets:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: assets-builder
+    image: "${COMPOSE_PROJECT_NAME}-assets:latest"
+    volumes:
+      - .:/var/www/app/:rw
+    environment:
+      NODE_DEV_UID: ${DEV_UID}
+    command: [ "yarn", "webpack", "--progress", "--watch" ]
+
   db:
     image: postgres
     volumes:

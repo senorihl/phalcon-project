@@ -3,6 +3,7 @@
 namespace App\Web;
 
 use App\Phalcon\ExceptionListener;
+use App\Phalcon\Volt\AssetExtension;
 use Phalcon\Di\DiInterface;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\ModuleDefinitionInterface;
@@ -31,6 +32,8 @@ class Module implements ModuleDefinitionInterface
             $volt->setOptions([
                 'path' => BASE_PATH . '/var/cache/volt/',
             ]);
+
+            $volt->getCompiler()->addExtension(new AssetExtension());
 
             return $volt;
         });
