@@ -1,5 +1,8 @@
 name: PHPUnit
 
+permissions:
+  pull-requests: write
+
 on:
   push:
   pull_request:
