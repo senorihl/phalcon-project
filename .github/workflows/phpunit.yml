@@ -1,6 +1,15 @@
 name: PHPUnit
 
-on: [push]
+permissions:
+  pull-requests: write
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-test:
@@ -43,3 +52,6 @@ jobs:
         with:
           recreate: true
           path: code-coverage-summary.md
+      - name: Print logs of failure
+        if: failure()
+        run: docker container logs test-runner
