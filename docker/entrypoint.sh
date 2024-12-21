@@ -2,7 +2,7 @@
 
 echo "$(date +"%Y-%m-%d %H:%M:%S,%3N") INFO Container start"
 
-set -x
+set -e
 
 if test -n "$DEV_UID"; then
   usermod -u ${DEV_UID} www-data
