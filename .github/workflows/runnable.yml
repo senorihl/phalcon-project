@@ -1,0 +1,35 @@
+name: Docker
+
+on: [push]
+
+jobs:
+  build-test:
+    name: "Build & run runnable container"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup docker
+        uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: phalcon-project-tester:latest
+          context: .
+          file: ./docker/Dockerfile
+          target: runnable
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
+      - name: Start test runner container
+        run: docker container run -d -p 80:80 --name test-runner phalcon-project-tester:latest; sleep 10
+      - name: Tests some URLS
+        run: |-
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/status)
+          if [ $_status -ne 200 ]; then exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/)
+          if [ $_status -ne 200 ]; then exit 1; fi 
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/assets/manifest.json)
+          if [ $_status -ne 200 ]; then exit 1; fi 
