@@ -134,7 +134,7 @@ It's totally standalone for each configured Phalcon module.
 
 ### What's next ?
 
-- [ ] Add an assets builder like Webpack
+- [x] Add an assets builder like Webpack [#1](https://github.com/senorihl/phalcon-project/pull/1)
 - [ ] Add an console interpreter (using `symfony/console` which is far more understandable than the built-in system)
 - [ ] Add an database migration system
 - [ ] _More to come..._
