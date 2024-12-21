@@ -1,0 +1,56 @@
+name: Docker
+
+on: [push]
+
+env:
+  COMPOSE_FILE: production.compose.yaml
+
+jobs:
+  build-test:
+    name: "Build & run runnable container"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup docker
+        uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: phalcon-project-tester:latest
+          context: .
+          file: ./docker/Dockerfile
+          target: runnable
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
+      - name: Start test runner container
+        run: docker compose up -d --wait; sleep 5
+      - name: Tests some URLS
+        run: |-
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://phalcon-project.localhost/status)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://phalcon-project.localhost/)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi 
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://phalcon-project.localhost/assets/manifest.json)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://api.phalcon-project.localhost/status)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://api.phalcon-project.localhost/)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://api.phalcon-project.localhost/assets/manifest.json)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+      - name: "[DEBUG] Display URL output"
+        if: runner.debug == '1'
+        run: |-
+          curl -i http://phalcon-production.localhost/status
+          curl -i http://phalcon-production.localhost/
+          curl -i http://phalcon-production.localhost/assets/manifest.json
+          curl -i http://api.phalcon-production.localhost/status
+          curl -i http://api.phalcon-production.localhost/
+          curl -i http://api.phalcon-production.localhost/assets/manifest.json
+      - name: Print logs of failure
+        if: failure()
+        run: sleep 3; docker compose logs web api traefik

@@ -82,6 +82,27 @@ ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
 
 CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]
 
+FROM node:lts AS assets-builder
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+WORKDIR /var/www/app/
+
+COPY package.json yarn.lock /var/www/app/
+
+ENV YARN_CACHE_FOLDER=/var/www/.yarn
+
+RUN --mount=type=cache,target=/var/www/.yarn \
+     yarn install && chown node:node -R /var/www/.yarn
+
+COPY --chown=node:node . /var/www/app/
+
+RUN [ "yarn", "webpack", "--progress", "--env", "production" ]
+
+ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
+
+CMD [ "yarn", "webpack", "--progress", "--env", "production" ]
+
 FROM core AS runnable
 
 ARG PHALCON_MODULE=web
@@ -92,13 +113,17 @@ RUN unset COMPOSER_HOME \
     && export DEBIAN_FRONTEND=noninteractive \
     && find . -type d | grep .git | xargs rm -rf \
     && apt autoremove -y php8.3-xdebug \
-    && sed -i 's/^/;/' /etc/php/8.0/mods-available/xdebug.ini \
+    && sed -i 's/^/;/' /etc/php/8.3/mods-available/xdebug.ini \
     && composer clear-cache \
     && composer install --prefer-dist \
     && sed -i '/^#/d' /etc/nginx/sites-available/default \
     && sed -i '/^$/d' /etc/nginx/sites-available/default \
     && sed -i 's/\$http_x_phalcon_module if_not_empty/'"${PHALCON_MODULE}"'/' /etc/nginx/sites-available/default
 
+COPY --from=assets-builder \
+    --chown=www-data:www-data \
+    /var/www/app/public/assets/ \
+    /var/www/app/public/assets/
 
 HEALTHCHECK CMD [ "/usr/local/bin/healthcheck.sh" ]
 
