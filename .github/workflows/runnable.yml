@@ -24,12 +24,14 @@ jobs:
           cache-to: type=gha,mode=max
           load: true
       - name: Start test runner container
-        run: docker container run -d -p 80:80 --name test-runner phalcon-project-tester:latest; sleep 10
+        run: |-
+          docker container run -d -p 80:80 --name test-runner phalcon-project-tester:latest
+          .github/scripts/wait-for-healthy.sh test-runner
       - name: Tests some URLS
         run: |-
           _status=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/status)
-          if [ $_status -ne 200 ]; then exit 1; fi
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
           _status=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/)
-          if [ $_status -ne 200 ]; then exit 1; fi 
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi 
           _status=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/assets/manifest.json)
-          if [ $_status -ne 200 ]; then exit 1; fi 
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi 
