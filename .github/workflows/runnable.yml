@@ -2,6 +2,9 @@ name: Docker
 
 on: [push]
 
+env:
+  COMPOSE_FILE: production.compose.yaml
+
 jobs:
   build-test:
     name: "Build & run runnable container"
@@ -24,10 +27,12 @@ jobs:
           cache-to: type=gha,mode=max
           load: true
       - name: Start test runner container
-        run: docker compose -f production.compose.yaml up -d --wait
+        run: docker compose up -d --wait
       - name: Tests some URLS
         run: |-
-          _status=$(curl -s -o /dev/null -w "%{http_code}" http://phalcon-production.localhost/status)
+          _status=$(curl -s -o /dev/null -w "%{http_code}" -H http://phalcon-production.localhost/status)
+          if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
+          _status=$(curl -s -o /dev/null -w "%{http_code}" http://api.phalcon-production.localhost/status)
           if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
           _status=$(curl -s -o /dev/null -w "%{http_code}" http://phalcon-production.localhost/)
           if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi 
@@ -35,4 +40,4 @@ jobs:
           if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
       - name: Print logs of failure
         if: failure()
-        run: docker compose -f production.compose.yaml logs web api
+        run: docker compose logs web api traefik
