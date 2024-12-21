@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-      target: core
+      target: runnable
     image: "${COMPOSE_PROJECT_NAME}-web:latest"
     env_file:
       - .env
