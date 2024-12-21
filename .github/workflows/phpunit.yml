@@ -43,3 +43,6 @@ jobs:
         with:
           recreate: true
           path: code-coverage-summary.md
+      - name: Print logs of failure
+        if: failure()
+        run: docker container logs test-runner
