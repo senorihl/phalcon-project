@@ -9,9 +9,11 @@ class AssetExtension
      */
     private static array $assetMap = [];
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function initialize()
     {
-
         if (file_exists(realpath(BASE_PATH . '/public/assets/manifest.json'))) {
             $content = file_get_contents(BASE_PATH . '/public/assets/manifest.json');
             $content = json_decode($content, true);
