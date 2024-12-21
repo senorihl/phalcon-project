@@ -39,7 +39,7 @@ jobs:
           _status=$(curl -s -o /dev/null -w "%{http_code}" http://api.phalcon-project.localhost/status)
           if [ $_status -ne 200 ]; then echo "Status<$_status> is not 200"; exit 1; fi
       - name: [DEBUG] Display URL output
-        if: ${{ runner.debug == '1' }}
+        if: runner.debug == '1'
         run: |-
           curl -i http://phalcon-production.localhost/status
           curl -i http://api.phalcon-production.localhost/status
