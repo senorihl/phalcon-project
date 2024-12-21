@@ -25,8 +25,8 @@ jobs:
           load: true
       - name: Start test runner container
         run: |-
-          docker container run -d -p 80:80 --name test-runner phalcon-project-tester:latest
-          .github/scripts/wait-for-healthy.sh test-runner
+          _container_id=$(docker container run -d -p 80:80 --name test-runner phalcon-project-tester:latest)
+          .github/scripts/wait-for-healthy.sh $_container_id
       - name: Tests some URLS
         run: |-
           _status=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1/status)
