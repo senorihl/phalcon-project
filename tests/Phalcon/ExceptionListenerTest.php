@@ -3,8 +3,8 @@
 namespace App\Tests\Phalcon;
 
 use App\Phalcon\ExceptionListener;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ExceptionListener::class)]
 class ExceptionListenerTest extends TestCase

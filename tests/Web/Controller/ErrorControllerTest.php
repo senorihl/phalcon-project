@@ -7,7 +7,6 @@ use App\Web\Controller\ErrorController;
 use App\Web\Module;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ErrorController::class)]
 #[UsesClass(Module::class)]

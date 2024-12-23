@@ -1,21 +1,32 @@
 <?php
 
-namespace App\Tests\Api\Controller;
+namespace App\Tests\Web\Controller;
 
-use App\Api\Controller\IndexController;
-use App\Api\Module;
-use App\Api\Plugin\ResponseFormatter;
+use App\Phalcon\ExceptionListener;
 use App\Tests\PhalconTestCase;
+use App\Web\Controller\ErrorController;
+use App\Web\Controller\IndexController;
+use App\Web\Module;
 use Phalcon\Db\Adapter\AdapterInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(IndexController::class)]
-#[CoversClass(ResponseFormatter::class)]
 #[UsesClass(Module::class)]
+#[UsesClass(ExceptionListener::class)]
+#[UsesClass(ErrorController::class)]
 class IndexControllerTest extends PhalconTestCase
 {
+
+    public function testPhpinfoAction()
+    {
+        $this->handleAction([
+            'controller' => 'index',
+            'action' => 'phpinfo',
+        ]);
+        $this->assertEquals(200, $this->getResponse()->getStatusCode() ?? 200);
+        $this->assertStringContainsString('Linux', $this->getResponse()->getContent());
+    }
 
     public function testStatusAction()
     {
@@ -53,15 +64,29 @@ class IndexControllerTest extends PhalconTestCase
         $this->assertStringContainsString('Database: Nok', $this->getResponse()->getContent());
     }
 
+    public function testExceptionAction()
+    {
+        $this->handleAction([
+            'controller' => 'index',
+            'action' => 'exception',
+        ]);
+        $this->assertEquals(500, $this->getResponse()->getStatusCode());
+        $this->assertStringContainsString('<title>Something went wrong</title>', $this->getResponse()->getContent());
+        $this->assertStringContainsString('Example exception', $this->getResponse()->getContent());
+    }
+
     public function testIndexAction()
     {
-        $this->handleAction(['action' => 'index', 'controller' => 'index']);
-        $this->assertJson($this->getResponse()->getContent());
-        $this->assertSame(['Hello' => 'World!'], json_decode($this->getResponse()->getContent(), true));
+        $this->handleAction([
+            'controller' => 'index',
+            'action' => 'index',
+        ]);
+        $this->assertEquals(200, $this->getResponse()->getStatusCode() ?? 200);
+        $this->assertStringContainsString('<title>You\'re all set up</title>', $this->getResponse()->getContent());
     }
 
     public function getModule(): string
     {
-        return 'api';
+        return 'web';
     }
 }

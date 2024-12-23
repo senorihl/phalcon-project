@@ -1,16 +1,11 @@
 # Environment
 DEV_UID:=$(shell id -u)
+BUILDKIT_PROGRESS=plain
 export DEV_UID
+export BUILDKIT_PROGRESS
 
 # Executables (local)
-DOCKER_COMP = docker compose
-
-# Docker containers
-PHP_CONT = $(DOCKER_COMP) exec -e DEV_UID=$(DEV_UID) php
-
-# Executables
-PHP      = $(PHP_CONT) php
-COMPOSER = $(PHP_CONT) php /usr/local/bin/composer
+DOCKER_COMP = docker compose --progress plain
 
 # Misc
 .DEFAULT_GOAL = help
@@ -31,7 +26,8 @@ up: ## Start the docker hub in detached mode (no logs)
 start: build up ## Build and start the containers
 
 down: ## Stop the docker hub
-	@$(DOCKER_COMP) down --remove-orphans
+	@$(eval opts ?=--remove-orphans)
+	@$(DOCKER_COMP) down $(opts)
 
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
@@ -50,10 +46,10 @@ exec:
 	@$(DOCKER_COMP) exec -e DEV_UID=$(DEV_UID) -u www-data php $(c)
 
 root@sh: ## Connect to the Phalcon container as root
-	@$(PHP_CONT) sh
+	@$(DOCKER_COMP) run --rm -e DEV_UID=$(DEV_UID) -u root php sh
 
 root@bash: ## Connect to the Phalcon container via bash so up and down arrows go to previous commands as root
-	@$(PHP_CONT) bash
+	@$(DOCKER_COMP) run --rm -e DEV_UID=$(DEV_UID) -u root php bash
 
 test: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
 	@$(eval c ?=)

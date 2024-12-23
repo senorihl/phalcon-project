@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="tests/phpunit.php"
-         cacheDirectory="var/cache/phpunit"
+         xsi:noNamespaceSchemaLocation="../../vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="../../tests/phpunit.php"
+         cacheDirectory="../../var/cache/phpunit"
          executionOrder="depends,defects"
          shortenArraysForExportThreshold="10"
          beStrictAboutOutputDuringTests="true"
@@ -21,9 +21,7 @@
             <directory>src</directory>
         </include>
         <exclude>
-            <directory>src/Migrations/</directory>
-            <file>src/phpunit.php</file>
-            <file>src/services.php</file>
+            <file>src/loader.php</file>
         </exclude>
     </source>
 </phpunit>

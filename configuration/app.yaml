@@ -1,0 +1,4 @@
+migrations:
+  table:
+    service: db
+    table: migrations
