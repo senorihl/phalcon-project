@@ -10,8 +10,8 @@ if test -n "$DEV_UID"; then
 fi
 
 if test -n "$NODE_DEV_UID"; then
-  usermod -u ${NODE_DEV_UID} www-data
-  groupmod -g ${NODE_DEV_UID} www-data
+  usermod -u ${NODE_DEV_UID} node
+  groupmod -g ${NODE_DEV_UID} node
 fi
 
 if [ $1 = "supervisord" ] || [ $1 = "php" ]; then
