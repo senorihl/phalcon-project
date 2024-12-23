@@ -5,13 +5,6 @@ export DEV_UID
 # Executables (local)
 DOCKER_COMP = docker compose
 
-# Docker containers
-PHP_CONT = $(DOCKER_COMP) exec -e DEV_UID=$(DEV_UID) php
-
-# Executables
-PHP      = $(PHP_CONT) php
-COMPOSER = $(PHP_CONT) php /usr/local/bin/composer
-
 # Misc
 .DEFAULT_GOAL = help
 .PHONY        : help build up start down logs sh composer vendor sf cc test
@@ -50,10 +43,10 @@ exec:
 	@$(DOCKER_COMP) exec -e DEV_UID=$(DEV_UID) -u www-data php $(c)
 
 root@sh: ## Connect to the Phalcon container as root
-	@$(PHP_CONT) sh
+	@$(DOCKER_COMP) run --rm -e DEV_UID=$(DEV_UID) -u root php sh
 
 root@bash: ## Connect to the Phalcon container via bash so up and down arrows go to previous commands as root
-	@$(PHP_CONT) bash
+	@$(DOCKER_COMP) run --rm -e DEV_UID=$(DEV_UID) -u root php bash
 
 test: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
 	@$(eval c ?=)

@@ -13,7 +13,9 @@
         "ext-curl": "*",
         "ext-json": "*",
         "ext-pdo": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "symfony/console": "^7.2",
+        "phalcon/migrations": "^3.0"
     },
     "autoload": {
         "psr-4": {
