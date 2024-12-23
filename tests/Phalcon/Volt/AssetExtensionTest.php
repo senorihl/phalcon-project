@@ -1,6 +1,6 @@
 <?php
 
-namespace Phalcon\Volt;
+namespace App\Tests\Phalcon\Volt;
 
 use App\Phalcon\Volt\AssetExtension;
 use PHPUnit\Framework\Attributes\DataProvider;

@@ -2,7 +2,6 @@
 
 namespace App\Tests\Web;
 
-use App\Web\Controller\IndexController;
 use App\Web\Module;
 use Phalcon\Di\DiInterface;
 use Phalcon\Events\Manager;

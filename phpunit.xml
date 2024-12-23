@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="src/phpunit.php"
+         bootstrap="tests/phpunit.php"
          cacheDirectory="var/cache/phpunit"
          executionOrder="depends,defects"
          shortenArraysForExportThreshold="10"
@@ -12,7 +12,7 @@
          failOnWarning="true">
     <testsuites>
         <testsuite name="default">
-            <directory>src/Tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 
@@ -21,7 +21,9 @@
             <directory>src</directory>
         </include>
         <exclude>
-            <directory>src/Tests/</directory>
+            <directory>src/Migrations/</directory>
+            <directory>src/Command/Migration/</directory>
+            <directory>src/Helper/Migration/</directory>
             <file>src/phpunit.php</file>
             <file>src/services.php</file>
         </exclude>

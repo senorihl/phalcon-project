@@ -1,6 +1,10 @@
 name: Docker
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 env:
   COMPOSE_FILE: production.compose.yaml
