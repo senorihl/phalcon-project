@@ -1,5 +1,6 @@
 <?php
 
+use App\Command\Migration;
 use App\Web\Module as WebModule;
 use App\Api\Module as ApiModule;
 use Phalcon\Mvc\Application;
@@ -13,7 +14,10 @@ use Phalcon\Logger\Logger;
 function build_config()
 {
     return new \Phalcon\Config\Config([
-        'base_path' => BASE_PATH
+        'base_path' => BASE_PATH,
+        'commands' => [
+            Migration::class,
+        ]
     ]);
 }
 
