@@ -16,7 +16,7 @@ function build_config()
     return new \Phalcon\Config\Config([
         'base_path' => BASE_PATH,
         'commands' => [
-            Migration::class,
+            Migration\Generate::class,
         ]
     ]);
 }
@@ -66,6 +66,8 @@ function build_dependency_injection(string $defaultModule): DiInterface
     });
 
     $container->set('config', build_config());
+
+    \Phalcon\Di\Di::setDefault($container);
 
     return $container;
 }
