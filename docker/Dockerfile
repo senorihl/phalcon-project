@@ -52,8 +52,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && php -v \
     && composer -V
 
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-COPY docker/healthcheck.sh /usr/local/bin/healthcheck.sh
 COPY docker/supervisor/supervisor.conf /etc/supervisord.conf
 COPY docker/php/php.ini /etc/php/8.3/fpm/php.ini
 COPY docker/php/php-fpm.conf /etc/php/8.3/fpm/php-fpm.conf
@@ -63,18 +61,21 @@ COPY docker/nginx/site.conf /etc/nginx/sites-available/default
 
 WORKDIR /var/www/app/
 
-COPY composer.json composer.lock /var/www/app/
+COPY composer.* /var/www/app/
 
 ENV COMPOSER_HOME=/var/www/.composer
 
-RUN --mount=type=cache,target=/var/www/.composer \
-     composer install && chown www-data:www-data -R /var/www/.composer
+#RUN --mount=type=cache,target=/var/www/.composer \
+#     composer install && chown www-data:www-data -R /var/www/.composer
 
 RUN deluser ubuntu
 
 COPY --chown=www-data:www-data . /var/www/app/
 
 EXPOSE 80
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY docker/healthcheck.sh /usr/local/bin/healthcheck.sh
 
 HEALTHCHECK --start-period=5s CMD [ "/usr/local/bin/healthcheck.sh" ]
 
@@ -88,14 +89,15 @@ COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 WORKDIR /var/www/app/
 
-COPY package.json yarn.lock /var/www/app/
+COPY package.json yarn.lock *.js /var/www/app/
 
 ENV YARN_CACHE_FOLDER=/var/www/.yarn
 
 RUN --mount=type=cache,target=/var/www/.yarn \
      yarn install && chown node:node -R /var/www/.yarn
 
-COPY --chown=node:node . /var/www/app/
+COPY --chown=node:node assets/ /var/www/app/assets/
+COPY --chown=node:node views/ /var/www/app/views/
 
 RUN [ "yarn", "webpack", "--progress", "--env", "production" ]
 
