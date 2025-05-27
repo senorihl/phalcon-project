@@ -1,5 +1,9 @@
 # syntax=docker/dockerfile:1
 
+ARG NODE_VERSION=lts
+ARG PHP_VERSION=8.4
+ARG PHALCON_VERSION=5.9.*
+
 FROM ubuntu:24.04 AS core
 
 RUN export DEBIAN_FRONTEND=noninteractive \
@@ -24,27 +28,29 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && rm -rf /var/lib/{apt,dpkg,cache,log} \
     && rm -rf /var/www/html/
 
+ARG PHP_VERSION
+ARG PHALCON_VERSION
+
 RUN export DEBIAN_FRONTEND=noninteractive \
     && LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php \
     && apt update -y \
     && apt install -y \
-        php8.3-fpm \
-        php8.3-mbstring \
-        php8.3-curl \
-        php8.3-dom \
-        php8.3-fileinfo \
-        php8.3-intl \
-        php8.3-pcov \
-        php8.3-bcmath \
-        php8.3-pdo \
-        php8.3-pgsql \
-        php8.3-mysql \
-        php8.3-sqlite3 \
-        php8.3-gettext \
-        php8.3-phalcon5 \
-        php8.3-zip \
-        php8.3-yaml \
-        php8.3-xdebug \
+        php${PHP_VERSION}-fpm \
+        php${PHP_VERSION}-mbstring \
+        php${PHP_VERSION}-curl \
+        php${PHP_VERSION}-dom \
+        php${PHP_VERSION}-fileinfo \
+        php${PHP_VERSION}-intl \
+        php${PHP_VERSION}-bcmath \
+        php${PHP_VERSION}-pdo \
+        php${PHP_VERSION}-pgsql \
+        php${PHP_VERSION}-mysql \
+        php${PHP_VERSION}-sqlite3 \
+        php${PHP_VERSION}-gettext \
+        php${PHP_VERSION}-phalcon=${PHALCON_VERSION} \
+        php${PHP_VERSION}-zip \
+        php${PHP_VERSION}-yaml \
+        php${PHP_VERSION}-xdebug \
     && apt clean autoclean \
     && apt-get autoremove -y \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
@@ -53,13 +59,15 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && php composer-setup.php \
     && php -r "unlink('composer-setup.php');" \
     && mv composer.phar /usr/local/bin/composer \
+    && update-alternatives --install /usr/bin/php-fpm fpm /usr/sbin/php-fpm${PHP_VERSION} 100 \
     && php -v \
+    && php-fpm -v \
     && composer -V
 
 COPY docker/supervisor/supervisor.conf /etc/supervisord.conf
-COPY docker/php/php.ini /etc/php/8.3/fpm/php.ini
-COPY docker/php/php-fpm.conf /etc/php/8.3/fpm/php-fpm.conf
-COPY docker/php/xdebug.ini /etc/php/8.3/mods-available/xdebug.ini
+COPY docker/php/php.ini /etc/php/${PHP_VERSION}/fpm/php.ini
+COPY docker/php/php-fpm.conf /etc/php/${PHP_VERSION}/fpm/php-fpm.conf
+COPY docker/php/xdebug.ini /etc/php/${PHP_VERSION}/mods-available/xdebug.ini
 COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY docker/nginx/site.conf /etc/nginx/sites-available/default
 
@@ -76,18 +84,17 @@ RUN deluser ubuntu
 
 COPY --chown=www-data:www-data . /var/www/app/
 
+ENV PHP_VERSION=${PHP_VERSION}
+
 EXPOSE 80
 
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-COPY docker/healthcheck.sh /usr/local/bin/healthcheck.sh
-
-HEALTHCHECK --start-period=5s CMD [ "/usr/local/bin/healthcheck.sh" ]
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
 
 CMD [ "supervisord", "-c", "/etc/supervisord.conf" ]
 
-FROM node:lts AS assets-builder
+FROM node:${NODE_VERSION} AS assets-builder
 
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
@@ -118,8 +125,8 @@ COPY . /var/www/app/
 RUN unset COMPOSER_HOME \
     && export DEBIAN_FRONTEND=noninteractive \
     && find . -type d | grep .git | xargs rm -rf \
-    && apt autoremove -y php8.3-xdebug \
-    && sed -i 's/^/;/' /etc/php/8.3/mods-available/xdebug.ini \
+    && apt autoremove -y php${PHP_VERSION}-xdebug \
+    && sed -i 's/^/;/' /etc/php/${PHP_VERSION}/mods-available/xdebug.ini \
     && composer clear-cache \
     && composer install --prefer-dist \
     && sed -i '/^#/d' /etc/nginx/sites-available/default \
@@ -130,6 +137,8 @@ COPY --from=assets-builder \
     --chown=www-data:www-data \
     /var/www/app/public/assets/ \
     /var/www/app/public/assets/
+
+COPY docker/healthcheck.sh /usr/local/bin/healthcheck.sh
 
 HEALTHCHECK CMD [ "/usr/local/bin/healthcheck.sh" ]
 

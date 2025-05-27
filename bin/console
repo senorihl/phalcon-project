@@ -8,14 +8,6 @@ require_once BASE_PATH . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 
-$commands = array_filter(array_merge([], get_application_classes()), function (string $class) {
-    return in_array(\Symfony\Component\Console\Command\Command::class, class_parents($class));
-});
-
-if (array_key_exists('phalcon_commands', $GLOBALS)) {
-    array_push($commands, ...$GLOBALS['phalcon_commands']);
-}
-
 $container = build_dependency_injection(PHALCON_MODULE);
 \Phalcon\Di\Di::setDefault($container);
 /** @var \Phalcon\Config\Config $config */
@@ -23,10 +15,5 @@ $config = $container->getShared('config');
 $application = new Application();
 $application->setCatchExceptions(true);
 $application->setCatchErrors(true);
-$application->addCommands(array_map(
-    function (string $className) {
-        return new $className();
-    },
-    $commands
-));
+$application->addCommands(get_commands());
 $application->run();

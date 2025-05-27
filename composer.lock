@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3dde9f16ba35d0bbc2af41c72acc5caa",
+    "content-hash": "395e214e8dee30e0a0030d020a397d61",
     "packages": [
         {
             "name": "doctrine/sql-formatter",
@@ -268,35 +268,6 @@
                 "source": "https://github.com/php-fig/container/tree/2.0.2"
             },
             "time": "2021-11-05T16:47:00+00:00"
-        },
-        {
-            "name": "senorihl/migrations",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "packages/migrations",
-                "reference": "9b37b7857710d1e794e2b81eb74f9c684b39f590"
-            },
-            "require": {
-                "doctrine/sql-formatter": "^1.5",
-                "ext-pdo": "*",
-                "ext-phalcon": "^5.4",
-                "nette/php-generator": "^4.1",
-                "symfony/console": "^7.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "App\\": "src/"
-                },
-                "files": [
-                    "src/loader.php"
-                ]
-            },
-            "description": "Generate & execute database migrations",
-            "transport-options": {
-                "relative": true
-            }
         },
         {
             "name": "symfony/console",
@@ -2706,9 +2677,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "senorihl/migrations": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -2721,7 +2690,7 @@
     },
     "platform-dev": {},
     "platform-overrides": {
-        "php": "8.3"
+        "php": "8.4"
     },
     "plugin-api-version": "2.6.0"
 }

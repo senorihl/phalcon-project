@@ -5,7 +5,7 @@
     "license": "MIT",
     "config": {
         "platform": {
-            "php": "8.3"
+            "php": "8.4"
         }
     },
     "require": {
@@ -16,7 +16,8 @@
         "ext-mbstring": "*",
         "ext-yaml": "*",
         "symfony/console": "^7.2",
-        "senorihl/migrations": "dev-main"
+        "nette/php-generator": "^4.1",
+        "doctrine/sql-formatter": "^1.5"
     },
     "autoload": {
         "psr-4": {
@@ -29,18 +30,9 @@
             "App\\Tests\\": "tests/"
         }
     },
-    "suggest": {
-        "senorihl/migrations": "This package alloww you generate migration files & execute them"
-    },
     "require-dev": {
         "phalcon/ide-stubs": "^5.8",
         "symfony/var-dumper": "^6.4",
         "phpunit/phpunit": "^12.0"
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url" : "packages/migrations"
-        }
-    ]
+    }
 }

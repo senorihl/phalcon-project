@@ -1,19 +1,25 @@
 <?php
 
-use App\Command\Migration;
-use App\Web\Module as WebModule;
-use App\Api\Module as ApiModule;
-use Phalcon\Mvc\Application;
-use App\Web\Controller as WebController;
 use App\Api\Controller as ApiController;
+use App\Api\Module as ApiModule;
+use App\Phalcon\Mvc\Model\MetaData\Strategy\Annotations;
+use App\Phalcon\Router;
+use App\Web\Controller as WebController;
+use App\Web\Module as WebModule;
+use Phalcon\Config\Config;
+use Phalcon\Db\Adapter\PdoFactory;
+use Phalcon\Di\Di;
 use Phalcon\Di\DiInterface;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Logger\Adapter\Stream;
 use Phalcon\Logger\Logger;
+use Phalcon\Mvc\Application;
+use Phalcon\Mvc\Model\MetaData\Memory;
+use Symfony\Component\Console\Command\Command;
 
 function build_config()
 {
-    $config = new \Phalcon\Config\Config([
+    $config = new Config([
         'base_path' => BASE_PATH,
     ]);
 
@@ -39,7 +45,7 @@ function build_dependency_injection(string $defaultModule): DiInterface
     $container->set('db', function () {
         $parts = parse_url(getenv('DATABASE_URL'));
 
-        return (new \Phalcon\Db\Adapter\PdoFactory)
+        return (new PdoFactory)
             ->newInstance(
                 $parts['scheme'],
                 [
@@ -52,13 +58,13 @@ function build_dependency_injection(string $defaultModule): DiInterface
     });
 
     $container->set('modelsMetadata', function () {
-        $metadata = new \Phalcon\Mvc\Model\MetaData\Memory();
-        $metadata->setStrategy(new \App\Phalcon\Mvc\Model\MetaData\Strategy\Annotations());
+        $metadata = new Memory();
+        $metadata->setStrategy(new Annotations());
         return $metadata;
     });
 
     $container->set('router', function () use ($container, $defaultModule) {
-        $router = new \App\Phalcon\Router(false);
+        $router = new Router(false);
         $router->setDI($container);
         $router->setDefaultModule($defaultModule);
         $router->setEventsManager($container->get('eventsManager'));
@@ -79,7 +85,7 @@ function build_dependency_injection(string $defaultModule): DiInterface
 
     $container->set('config', build_config());
 
-    \Phalcon\Di\Di::setDefault($container);
+    Di::setDefault($container);
 
     return $container;
 }
@@ -148,4 +154,29 @@ function get_application_classes(): array
     }
 
     return $classes;
+}
+
+/**
+ * @return Command[]
+ */
+function get_commands(): array
+{
+    $commands = [];
+
+    /** @var Config $config */
+    $config   = Di::getDefault()->get('config');
+
+    foreach (get_application_classes() as $class) {
+        if (!in_array(Command::class, class_parents($class))) {
+            continue;
+        }
+
+        if (str_starts_with($class, 'App\\Command\\Migration') && false === $config->path('migrations', false)) {
+            continue;
+        }
+
+        $commands[] = new $class;
+    }
+
+    return $commands;
 }

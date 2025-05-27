@@ -1,11 +1,11 @@
 # Environment
 DEV_UID:=$(shell id -u)
-BUILDKIT_PROGRESS=plain
+# BUILDKIT_PROGRESS=plain
 export DEV_UID
-export BUILDKIT_PROGRESS
+# export BUILDKIT_PROGRESS
 
 # Executables (local)
-DOCKER_COMP = docker compose --progress plain
+DOCKER_COMP = docker compose
 
 # Misc
 .DEFAULT_GOAL = help
@@ -42,8 +42,14 @@ bash: ## Connect to the Phalcon container via bash so up and down arrows go to p
 	@$(DOCKER_COMP) exec -e DEV_UID=$(DEV_UID) -u www-data php bash
 
 exec:
+	@$(eval u ?= www-data)
 	@$(eval c ?=)
-	@$(DOCKER_COMP) exec -e DEV_UID=$(DEV_UID) -u www-data php $(c)
+	@$(DOCKER_COMP) exec -e DEV_UID=$(DEV_UID) -u $(u) php $(c)
+
+run:
+	@$(eval u ?= www-data)
+	@$(eval c ?=)
+	@$(DOCKER_COMP) run -e DEV_UID=$(DEV_UID) -u $(u) php $(c)
 
 root@sh: ## Connect to the Phalcon container as root
 	@$(DOCKER_COMP) run --rm -e DEV_UID=$(DEV_UID) -u root php sh
@@ -52,8 +58,9 @@ root@bash: ## Connect to the Phalcon container via bash so up and down arrows go
 	@$(DOCKER_COMP) run --rm -e DEV_UID=$(DEV_UID) -u root php bash
 
 test: ## Start tests with phpunit, pass the parameter "c=" to add options to phpunit, example: make test c="--group e2e --stop-on-failure"
+	@$(eval cwd ?= /var/www/app)
 	@$(eval c ?=)
-	@$(DOCKER_COMP) exec -e DEV_UID=$(DEV_UID) -e APP_ENV=test -u www-data php php vendor/bin/phpunit $(c)
+	@$(DOCKER_COMP) run -e DEV_UID=$(DEV_UID) -e APP_ENV=test -w $(cwd) php php /var/www/app/vendor/bin/phpunit $(c)
 
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
