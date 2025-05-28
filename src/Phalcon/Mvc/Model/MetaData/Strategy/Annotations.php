@@ -12,7 +12,7 @@ class Annotations implements \Phalcon\Mvc\Model\MetaData\Strategy\StrategyInterf
     private ?\Phalcon\Annotations\Adapter\AdapterInterface $annotations = null;
     private ?\Phalcon\Mvc\Model\ManagerInterface $manager = null;
 
-    private function getRootStrategy()
+    public function getRootStrategy()
     {
         if (is_null($this->rootStrategy)) {
             $this->rootStrategy = new \Phalcon\Mvc\Model\MetaData\Strategy\Annotations();
@@ -171,7 +171,7 @@ class Annotations implements \Phalcon\Mvc\Model\MetaData\Strategy\StrategyInterf
 
     public function getColumnMaps(ModelInterface $model, DiInterface $container): array
     {
-        $reflection = $this->getAnnotations()->get($model);
+        $reflection = $this->getAnnotations()->get(get_class($model));
         $columnMap = array();
         $reverseColumnMap = array();
 
