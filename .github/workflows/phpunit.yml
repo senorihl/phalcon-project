@@ -46,11 +46,6 @@ jobs:
           echo >> code-coverage-summary.md
           cat coverage.txt | ./.github/scripts/parse_coverage.sh | tee -a code-coverage-summary.md
           echo >> code-coverage-summary.md
-          echo >> code-coverage-summary.md
-          echo "## Migrations Code Coverage" >> code-coverage-summary.md
-          echo >> code-coverage-summary.md
-          cat coverage-migrations.txt | ./.github/scripts/parse_coverage.sh | tee -a code-coverage-summary.md
-          echo >> code-coverage-summary.md
           cat code-coverage-summary.md >> $GITHUB_STEP_SUMMARY
 
       - name: 'Add Code Coverage Summary as PR Comment'
