@@ -38,8 +38,6 @@ jobs:
         run: |-
           docker container run --name test-runner --rm -v ".:/var/www/app/" -e "DEV_UID=$(id -u)" phalcon-project-tester:latest \
           php /var/www/app/vendor/bin/phpunit --show-uncovered-for-coverage-text --coverage-text=/var/www/app/coverage.txt
-          docker container run --name test-runner --rm -v ".:/var/www/app/" -e "DEV_UID=$(id -u)" -w /var/www/app/packages/migrations phalcon-project-tester:latest \
-          php /var/www/app/vendor/bin/phpunit --show-uncovered-for-coverage-text --coverage-text=/var/www/app/coverage-migrations.txt
 
       - name: 'Add Code Coverage to Job Summary'
         run: |

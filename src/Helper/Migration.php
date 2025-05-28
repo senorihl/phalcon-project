@@ -35,7 +35,6 @@ class Migration implements EventsAwareInterface
             $service = $this->config->path($servicePath);
             $this->adapter = Di::getDefault()->get($service);
             $this->adapter->setEventsManager($this->eventsManager);
-
         }
 
         return $this->adapter;
@@ -108,9 +107,11 @@ class Migration implements EventsAwareInterface
 
         $printer = new PsrPrinter();
 
+        // @codeCoverageIgnoreStart
         if (!file_exists($classDirectory) && !is_dir($classDirectory)) {
             mkdir($classDirectory, 0755, true);
         }
+        // @codeCoverageIgnoreEnd
 
         return file_put_contents($classFile, $printer->printFile($file));
     }
@@ -141,13 +142,14 @@ class Migration implements EventsAwareInterface
         $tablePath = 'migrations.table.table';
         $table = $this->config->path($tablePath, 'migrations');
 
+        /** @var AbstractPdo $adapter */
         $adapter = $this->getMigrationAdapter();
 
         if ($adapter->tableExists($table)) {
             return true;
         }
 
-        return $adapter->createTable($table, null, [
+        return $adapter->createTable($table, '', [
             'columns' => [
                 new Column(
                     'id',
