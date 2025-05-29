@@ -110,10 +110,6 @@ RUN --mount=type=cache,target=/var/www/.yarn \
 COPY --chown=node:node assets/ /var/www/app/assets/
 COPY --chown=node:node views/ /var/www/app/views/
 
-RUN [ "yarn", "webpack", "--progress", "--env", "production" ]
-
-ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
-
 CMD [ "yarn", "webpack", "--progress", "--env", "production" ]
 
 FROM core AS runnable

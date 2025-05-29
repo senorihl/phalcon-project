@@ -52,7 +52,7 @@ class Annotations implements \Phalcon\Mvc\Model\MetaData\Strategy\StrategyInterf
         $reflection = $this->getAnnotations()->get(get_class($model));
         $collection = $reflection->getClassAnnotations();
 
-        foreach ($collection->getAnnotations() as $annotation) {
+        foreach (($collection?->getAnnotations() ?? []) as $annotation) {
             /** @var Annotation $annotation */
             switch ($annotation->getName()) {
                 case 'Index': {
@@ -174,6 +174,11 @@ class Annotations implements \Phalcon\Mvc\Model\MetaData\Strategy\StrategyInterf
                                         $metaData['indexes'][$partsOf] = [];
                                     }
                                     $metaData['indexes'][$partsOf][] = $propertyMap[$name];
+                                } elseif (boolval($partsOf) === true) {
+                                    if (!array_key_exists($propertyMap[$name] . '_idx', $metaData['indexes'])) {
+                                        $metaData['indexes'][$propertyMap[$name] . '_idx'] = [];
+                                    }
+                                    $metaData['indexes'][$propertyMap[$name] . '_idx'][] = $propertyMap[$name];
                                 }
                             }
                         }

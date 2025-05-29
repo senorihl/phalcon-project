@@ -25,6 +25,7 @@ class Difference extends Injectable
         $indexes = $this->modelsMetadata->readMetaData($model)['indexes'] ?? [];
         $uniques = $this->modelsMetadata->readMetaData($model)['unique'] ?? [];
         $defaultSQL = $this->modelsMetadata->readMetaData($model)['sql_default'] ?? [];
+        dump($defaultSQL);
         $sizesFields = $this->modelsMetadata->readMetaData($model)['sizes'] ?? [];
         $referencesFields = $this->modelsManager->getRelations($modelName);
 
@@ -76,7 +77,7 @@ class Difference extends Injectable
                 $fieldDefinition['primary'] = true;
             }
 
-            if (in_array($fieldName, $defaultSQL)) {
+            if (isset($defaultSQL[$fieldName])) {
                 $fieldDefinition['default_sql'] = $defaultSQL[$fieldName];
             }
 
