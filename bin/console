@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+define('BASE_PATH', dirname(__DIR__));
+define('PHALCON_MODULE', 'cli');
+
+require_once BASE_PATH . '/vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+
+$container = build_dependency_injection(PHALCON_MODULE);
+\Phalcon\Di\Di::setDefault($container);
+/** @var \Phalcon\Config\Config $config */
+$config = $container->getShared('config');
+$application = new Application();
+$application->setCatchExceptions(true);
+$application->setCatchErrors(true);
+$application->addCommands(get_commands());
+$application->run();

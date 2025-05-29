@@ -3,9 +3,9 @@
 namespace App\Tests\Phalcon;
 
 use App\Phalcon\Router;
+use App\Web\Controller as WebController;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use App\Web\Controller as WebController;
 
 #[CoversClass(Router::class)]
 class RouterTest extends TestCase
