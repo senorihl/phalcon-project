@@ -180,10 +180,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/postcss-initial/-/postcss-initial-2.0.1.tgz#c385bd9d8ad31ad159edd7992069e97ceea4d09a"
   integrity sha512-L1wLVMSAZ4wovznquK0xmC7QSctzO4D0Is590bxpGqhqjboLXYA16dWZpfwImkdOgACdQ9PqXsuRroW6qPlEsg==
 
-"@csstools/postcss-is-pseudo-class@^5.0.1":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@csstools/postcss-is-pseudo-class/-/postcss-is-pseudo-class-5.0.1.tgz#12041448fedf01090dd4626022c28b7f7623f58e"
-  integrity sha512-JLp3POui4S1auhDR0n8wHd/zTOWmMsmK3nQd3hhL6FhWPaox5W7j1se6zXOG/aP07wV2ww0lxbKYGwbBszOtfQ==
+"@csstools/postcss-is-pseudo-class@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@csstools/postcss-is-pseudo-class/-/postcss-is-pseudo-class-5.0.3.tgz#d34e850bcad4013c2ed7abe948bfa0448aa8eb74"
+  integrity sha512-jS/TY4SpG4gszAtIg7Qnf3AS2pjcUM5SzxpApOrlndMeGhIbaTzWBzzP/IApXoNWEW7OhcjkRT48jnAUIFXhAQ==
   dependencies:
     "@csstools/selector-specificity" "^5.0.0"
     postcss-selector-parser "^7.0.0"
@@ -347,10 +347,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/postcss-unset-value/-/postcss-unset-value-4.0.0.tgz#7caa981a34196d06a737754864baf77d64de4bba"
   integrity sha512-cBz3tOCI5Fw6NIFEwU3RiwK6mn3nKegjpJuzCndoGq3BZPkUjnsq7uQmIeMNeMbMk7YD2MfKcgCpZwX5jyXqCA==
 
-"@csstools/selector-resolve-nested@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@csstools/selector-resolve-nested/-/selector-resolve-nested-3.0.0.tgz#704a9b637975680e025e069a4c58b3beb3e2752a"
-  integrity sha512-ZoK24Yku6VJU1gS79a5PFmC8yn3wIapiKmPgun0hZgEI5AOqgH2kiPRsPz1qkGv4HL+wuDLH83yQyk6inMYrJQ==
+"@csstools/selector-resolve-nested@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@csstools/selector-resolve-nested/-/selector-resolve-nested-3.1.0.tgz#848c6f44cb65e3733e478319b9342b7aa436fac7"
+  integrity sha512-mf1LEW0tJLKfWyvn5KdDrhpxHyuxpbNwTIwOYLIvsTffeyOf85j5oIzfG0yosxDgx/sswlqBnESYUcQH0vgZ0g==
 
 "@csstools/selector-specificity@^5.0.0":
   version "5.0.0"
@@ -789,7 +789,7 @@ autoprefixer@^10.4.21:
     picocolors "^1.1.1"
     postcss-value-parser "^4.2.0"
 
-browserslist@^4.24.0, browserslist@^4.24.4, browserslist@^4.24.5:
+browserslist@^4.24.0, browserslist@^4.24.4, browserslist@^4.25.0:
   version "4.25.0"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.25.0.tgz#986aa9c6d87916885da2b50d8eb577ac8d133b2c"
   integrity sha512-PJ8gYKeS5e/whHBh8xrwYK+dAvEj7JXtz6uTucnMRB8OiGTsKccFekoRrjajPBHV8oOY+2tI4uxeceSimKwMFA==
@@ -1421,10 +1421,10 @@ postcss-custom-media@^11.0.6:
     "@csstools/css-tokenizer" "^3.0.4"
     "@csstools/media-query-list-parser" "^4.0.3"
 
-postcss-custom-properties@^14.0.5:
-  version "14.0.5"
-  resolved "https://registry.yarnpkg.com/postcss-custom-properties/-/postcss-custom-properties-14.0.5.tgz#a180444de695f6e11ee2390be93ff6537663e86c"
-  integrity sha512-UWf/vhMapZatv+zOuqlfLmYXeOhhHLh8U8HAKGI2VJ00xLRYoAJh4xv8iX6FB6+TLXeDnm0DBLMi00E0hodbQw==
+postcss-custom-properties@^14.0.6:
+  version "14.0.6"
+  resolved "https://registry.yarnpkg.com/postcss-custom-properties/-/postcss-custom-properties-14.0.6.tgz#1af73a650bf115ba052cf915287c9982825fc90e"
+  integrity sha512-fTYSp3xuk4BUeVhxCSJdIPhDLpJfNakZKoiTDx7yRGCdlZrSJR7mWKVOBS4sBF+5poPQFMj2YdXx1VHItBGihQ==
   dependencies:
     "@csstools/cascade-layer-name-parser" "^2.0.5"
     "@csstools/css-parser-algorithms" "^3.0.5"
@@ -1545,12 +1545,12 @@ postcss-modules-values@^4.0.0:
   dependencies:
     icss-utils "^5.0.0"
 
-postcss-nesting@^13.0.1:
-  version "13.0.1"
-  resolved "https://registry.yarnpkg.com/postcss-nesting/-/postcss-nesting-13.0.1.tgz#c405796d7245a3e4c267a9956cacfe9670b5d43e"
-  integrity sha512-VbqqHkOBOt4Uu3G8Dm8n6lU5+9cJFxiuty9+4rcoyRPO9zZS1JIs6td49VIoix3qYqELHlJIn46Oih9SAKo+yQ==
+postcss-nesting@^13.0.2:
+  version "13.0.2"
+  resolved "https://registry.yarnpkg.com/postcss-nesting/-/postcss-nesting-13.0.2.tgz#fde0d4df772b76d03b52eccc84372e8d1ca1402e"
+  integrity sha512-1YCI290TX+VP0U/K/aFxzHzQWHWURL+CtHMSbex1lCdpXD1SoR2sYuxDu5aNI9lPoXpKTCggFZiDJbwylU0LEQ==
   dependencies:
-    "@csstools/selector-resolve-nested" "^3.0.0"
+    "@csstools/selector-resolve-nested" "^3.1.0"
     "@csstools/selector-specificity" "^5.0.0"
     postcss-selector-parser "^7.0.0"
 
@@ -1578,10 +1578,10 @@ postcss-place@^10.0.0:
   dependencies:
     postcss-value-parser "^4.2.0"
 
-postcss-preset-env@^10.2.0:
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/postcss-preset-env/-/postcss-preset-env-10.2.0.tgz#ea95a6fc70efb1a26f81e5cf0ccdb321a3439b6e"
-  integrity sha512-cl13sPBbSqo1Q7Ryb19oT5NZO5IHFolRbIMdgDq4f9w1MHYiL6uZS7uSsjXJ1KzRIcX5BMjEeyxmAevVXENa3Q==
+postcss-preset-env@^10.2.3:
+  version "10.2.3"
+  resolved "https://registry.yarnpkg.com/postcss-preset-env/-/postcss-preset-env-10.2.3.tgz#3a84bde7205b48f1304a656b25841bd3f40fb3cb"
+  integrity sha512-zlQN1yYmA7lFeM1wzQI14z97mKoM8qGng+198w1+h6sCud/XxOjcKtApY9jWr7pXNS3yHDEafPlClSsWnkY8ow==
   dependencies:
     "@csstools/postcss-cascade-layers" "^5.0.1"
     "@csstools/postcss-color-function" "^4.0.10"
@@ -1595,7 +1595,7 @@ postcss-preset-env@^10.2.0:
     "@csstools/postcss-hwb-function" "^4.0.10"
     "@csstools/postcss-ic-unit" "^4.0.2"
     "@csstools/postcss-initial" "^2.0.1"
-    "@csstools/postcss-is-pseudo-class" "^5.0.1"
+    "@csstools/postcss-is-pseudo-class" "^5.0.3"
     "@csstools/postcss-light-dark-function" "^2.0.9"
     "@csstools/postcss-logical-float-and-clear" "^3.0.0"
     "@csstools/postcss-logical-overflow" "^2.0.0"
@@ -1617,7 +1617,7 @@ postcss-preset-env@^10.2.0:
     "@csstools/postcss-trigonometric-functions" "^4.0.9"
     "@csstools/postcss-unset-value" "^4.0.0"
     autoprefixer "^10.4.21"
-    browserslist "^4.24.5"
+    browserslist "^4.25.0"
     css-blank-pseudo "^7.0.1"
     css-has-pseudo "^7.0.2"
     css-prefers-color-scheme "^10.0.0"
@@ -1628,7 +1628,7 @@ postcss-preset-env@^10.2.0:
     postcss-color-hex-alpha "^10.0.0"
     postcss-color-rebeccapurple "^10.0.0"
     postcss-custom-media "^11.0.6"
-    postcss-custom-properties "^14.0.5"
+    postcss-custom-properties "^14.0.6"
     postcss-custom-selectors "^8.0.5"
     postcss-dir-pseudo-class "^9.0.1"
     postcss-double-position-gradients "^6.0.2"
@@ -1639,7 +1639,7 @@ postcss-preset-env@^10.2.0:
     postcss-image-set-function "^7.0.0"
     postcss-lab-function "^7.0.10"
     postcss-logical "^8.1.0"
-    postcss-nesting "^13.0.1"
+    postcss-nesting "^13.0.2"
     postcss-opacity-percentage "^3.0.0"
     postcss-overflow-shorthand "^6.0.0"
     postcss-page-break "^3.0.4"
